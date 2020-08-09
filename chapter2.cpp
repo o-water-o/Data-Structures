@@ -7,6 +7,8 @@
 using namespace std;
 
 int get_head_array_length(LinkList &head){
+    /*
+     * 链表*/
     auto p = head->next;
     int i;
     for (i = 1; p->next!= nullptr ; p=p->next,++i);
@@ -14,8 +16,29 @@ int get_head_array_length(LinkList &head){
 }
 template <class T> int get_array_len(T& array){
     return sizeof(array)/sizeof(array[0]);
+
 }
-template <typename T> LinkList CreateSingleList(T array[], int length, bool is_head){
+template<class T> void print_array(T array[], int len=0){
+    int length;
+    if (!len)
+        length = get_array_len(array);
+    else
+        length = len;
+    for (int i = 0; i < length; ++i) {
+        cout<<array[i]<<"\t";
+    }
+    cout<<endl;
+}
+template <class T> bool array_insert(T L[],int len, int index, T value){
+    if (index >len +1 || index <1)
+        return false;
+    for (int i = len-1; i >=index-1 ; --i) {
+        L[i+1] = L[i];
+    }
+    L[index-1] = value;
+    return true;
+}
+template <typename T> LinkList CreateSingleList(T array[], int length, bool is_head, bool is_cycle){
     if (is_head) {
         auto head = new LNode;
         LinkList p = head;
@@ -36,6 +59,8 @@ template <typename T> LinkList CreateSingleList(T array[], int length, bool is_h
 //            }
 //            cout<<endl;
 //        delete p;
+        if (is_cycle)
+            p->next=head;
         return head;
 
     } else{
@@ -49,33 +74,27 @@ template <typename T> LinkList CreateSingleList(T array[], int length, bool is_h
             temp->next = nullptr;
             p->next = temp;
         }
+        if (is_cycle){
+            p->next=head;
+        }
         return head;
     }
 
 
 }
-void print_singlelist(LinkList &L, bool is_head, bool address){
-    LinkList p;
+void print_singlelist(LinkList &L, bool is_head, bool address,bool  is_cycle){
+    LinkList p,end;
     if (is_head) p=L->next; else p=L;
-    for (; p!= nullptr ; p=p->next) {
+    if (is_cycle) end = L;else end= nullptr;
+    for (; p!= end ; p=p->next) {
            cout<<p->data;
            if (address) cout<<" "<<p;
-           if (p->next) cout<<" -> ";
+           if (p->next!=end) cout<<" -> ";
     }
     cout<<endl;
 }
 
-template<class T> void print_array(T array[], int len=0){
-    int length;
-    if (!len)
-        length = get_array_len(array);
-    else
-        length = len;
-    for (int i = 0; i < length; ++i) {
-        cout<<array[i]<<"\t";
-    }
-    cout<<endl;
-}
+
 
 
 template<typename T>void reverse_array(T &array, int start, int end){
@@ -132,7 +151,9 @@ LinkList ex1(LinkList &L,int n){
     }
     cout<<"%%%%%"<<endl;
     print_singlelist(L);
-    return L;
+    return L;//        if (is_cycle){
+//            p->next->next=head;
+//        }
 }
 
 int ex2(LinkList &L, int k){
@@ -373,7 +394,7 @@ void ex10(LinkList& ha,LinkList& hb){
         p = p1;
         p1 = p1->next;
         p->next=nullptr;
-    }忽略文件添加.idea目录
+    }
     while (p2){
         p->next = p2;
         p = p2;
@@ -420,7 +441,7 @@ void ex14(LinkList& A,LinkList& B){
             auto t = new LNode;
             t->data = b->data;
             t->next= nullptr;
-            p->next = t;
+            p->next = t;print_singlelist(A);
             p=t;
             b = b->next;
         }
@@ -479,6 +500,103 @@ void ex15(LinkList& A, LinkList& B,LinkList& C){
     print_singlelist(A);
 
 }
+
+void ex16(LinkList &A,LinkList& B){
+    LinkList a=A->next,b=B->next,p=A;
+    p->next= nullptr;
+    while (a&&b){
+        if (a->data==b->data){
+            a = a->next;
+            b = b->next;
+        } else if (a->data<b->data){
+            p->next = a;
+            p=a;
+            a =a->next;
+            p->next= nullptr;
+        } else{
+            b = b->next;
+        }
+
+
+    }
+    while (a){
+        p->next = a;
+        p=a;
+        a=a->next;
+        p->next= nullptr;
+    }
+    print_singlelist(A);
+}
+LinkList ex17(LinkList& L1,LinkList& L2,int L1_LEN, int L2_LEN){
+    LinkList short_head,long_head,p;
+    if (L1_LEN<L2_LEN){
+        short_head=L1;
+        long_head = L2;
+    }
+    else{
+        short_head=L2;
+        long_head=L1;
+    }
+
+    for (p=short_head->next; p->next!=short_head;p=p->next);
+    p->next = long_head->next;
+    long_head->next = short_head->next;
+    print_singlelist(long_head, true, false, true);
+    return long_head;
+
+}
+void ex18(LinkList& ha,LinkList&hb){
+    //ha 为单项链表
+    //hb 为单向循环列表
+    auto t = new LNode;
+    t->next = hb->next;
+    hb->next = ha->next->next;
+    hb->data = ha ->next->data;
+    delete ha;
+    print_singlelist(t);
+}
+void ex19(LinkList& A,LinkList& B,LinkList &C){
+    LinkList pa,pb,pc,pre;
+    pa=A->next;
+    while (pa->next){
+        if (pa->data == pa->next->data){
+            auto t = pa->next;
+            pa->next = t->next;
+            delete t;
+        } else{
+            pa = pa->next;
+        }
+    }
+
+    pb=B->next;
+    while (pb->next){
+        if (pb->data == pb->next->data){
+            auto t = pb->next;
+            pb->next = t->next;
+            delete t;
+        } else{
+            pb = pb->next;
+        }
+    }
+
+    pc=C->next;
+    while (pc->next){
+        if (pc->data == pc->next->data){
+            auto t = pc->next;
+            pc->next = t->next;
+            delete t;
+        } else{
+            pc = pc->next;
+        }
+    }
+    pa->next = B->next;
+    delete B;
+    pb->next = C->next;
+    delete C;
+    print_singlelist(A);
+
+
+}
 void main_2_1_to_6(){
     //    Elem x[] = {1,2,3,4,5,6,7};
 //    int a[] = {11,13,15,17,19};
@@ -493,14 +611,16 @@ void main_2_1_to_6(){
 //    ex3(x,get_array_len(x),3);
 //    cout<<ex4(a,b,5);
 //    print_array(x,7);
-//    char str11[] = "loading";
+//    char str11[] = "loading";    while (A != nullptr){
+
 //    char str22[] = "being";
 //    LinkList str1 = CreateSingleList(str11,7);
 //    LinkList str2 = CreateSingleList(str22,5);
 //    cout<<ex5(str1,str2)->data;
 //    int x[] = {21,-15,-15,-7,15,8,-21,5};
 //    LinkList L = CreateSingleList(x,get_array_len(x));
-//    ex6(L,50);
+//    ex6(L,50);    while (A != nullptr){
+
 }
 void main2_7(){
     int x1[] = {2,4,6,8,11};
@@ -510,12 +630,12 @@ void main2_7(){
     ex7(l1,l2);
     print_singlelist(l1);
 }
-void main2_8(){
-    int x1[] = {1,3,5,6,7,8};
-    int x2[] = {33,32,21,20,19,14,13,2};
-    LinkList l1 = CreateSingleList(x1,get_array_len(x1), true);
-    LinkList l2 = CreateSingleList(x2,get_array_len(x2), true);
-    ex8(l1,l2);
+void main2_8() {
+    int x1[] = {1, 3, 5, 6, 7, 8};
+    int x2[] = {33, 32, 21, 20, 19, 14, 13, 2};
+    LinkList l1 = CreateSingleList(x1, get_array_len(x1), true);
+    LinkList l2 = CreateSingleList(x2, get_array_len(x2), true);
+    ex8(l1, l2);
 }
 void main_2_9(){
     //同ex8()
@@ -557,11 +677,184 @@ void main2_15(){
     LinkList l3 = CreateSingleList(x3,get_array_len(x3), true);
     ex15(l1,l2,l3);
 }
+void main2_16(){
+    int x1[] = {1,3,5,7,8,9,90};
+    int x2[] = {2,4,7,9,11,14,32};
+    LinkList l1 = CreateSingleList(x1,get_array_len(x1), true);
+    LinkList l2 = CreateSingleList(x2,get_array_len(x2), true);
+    ex16(l1,l2);
+}
+void main2_17(){
+    int x1[] = {1,3,5,7,9};
+    int x2[] = {2,4,6,8};
+    LinkList l1 = CreateSingleList(x1,get_array_len(x1), true,true);
+    LinkList l2 = CreateSingleList(x2,get_array_len(x2), true, true);
+//    print_singlelist(l1, true, false, true);
+    LinkList p = ex17(l1,l2,5,4);
+}
+//        if (is_cycle){
+//            p->next->next=head;
+//        }
+void main2_18(){
+    int x1[] = {1,3,5,7,9};
+    int x2[] = {2,4,6,8};
+    LinkList l1 = CreateSingleList(x1,get_array_len(x1), true, false);
+    LinkList l2 = CreateSingleList(x2,get_array_len(x2), true, true);
+    ex18(l1,l2);
+}
+void main2_19(){
+    int x1[] = {1,3,3,5,5,5};
+    int x2[] = {2,4,6,6,};
+    int x3[] = {7,10,10,11,11};
+    LinkList l1 = CreateSingleList(x1,get_array_len(x1), true, false);
+    LinkList l2 = CreateSingleList(x2,get_array_len(x2), true, false);
+    LinkList l3 = CreateSingleList(x3,get_array_len(x3), true, false);
+    ex19(l1,l2,l3);
+}
+void ex20(int x1[],int x1_len,const int x2[],int x2_len){
+    int i,j,all_len = x1_len+x2_len,q=all_len-1;
 
+    for (i = x1_len-1,j=x2_len-1; i >-1&& j>-1 ;) {
+        if (x1[i] >x2[j]){
+            x1[q] = x1[i];
+            --i;
+        } else{
+            x1[q] = x2[j];
+            --j;
+        }
+        --q;
+        print_array(x1,15);
+    }
+
+}
+void main2_20(){
+    int x1[15] = {1,3,3,5,5,5};
+    int x2[] = {2,4,6,6,};
+    ex20(x1,6,x2,4);
+}
+void ex21(int x[],int len){
+    int p=0;
+    for (int i = 1; i <len &&p< len-1; ++i) {
+
+        if (x[i]<0){
+            int temp,t2;
+            temp = x[p];
+            x[p] = x[p+1];
+            x[p+1] = temp;
+            t2 = x[p];
+            x[p] = x[i];
+            x[i] = t2;
+            ++p;
+        }
+    }
+    print_array(x,len);
+}
+void main2_21(){
+    int x[] = {-2,3,-5,9,3,-4,3,-3,-2,12,34,-1};
+    ex21(x,get_array_len(x));
+}
+void ex22(int x[], int len){
+    int p=0;
+    for (int i = 1; i <len &&p <len-1 ; ++i) {
+        cout<<x[p]<<endl;
+        if (x[i]<19){
+            int t1;
+            t1 = x[p];
+            x[p] = x[p+1];
+            x[p+1] = t1;
+
+            t1 = x[p];
+            x[p] = x[i];
+            x[i] = t1;
+            ++p;
+        }
+
+    }
+    print_array(x,len);
+}
+void main2_22(){
+    int x[] = {1,3,5,67,81,44,4,5,6,8,3,4,55,14,15,18,-1};
+    ex22(x,get_array_len(x));
+}
+
+void ex23(int A[], int size, int num, int x){
+
+    if (x>A[num-1])
+    {
+        A[size] = x;
+    }
+    else {
+        int start = 0, end = num - 1, mid;
+        while (start < end) {
+            mid = end / 2;
+            if (x <= A[mid])
+                if (A[mid - 1] <= x) {
+                    array_insert(A, size, mid+1, x);
+                    break;
+                } else {
+                    end = mid;
+                }
+            else if (A[mid + 1] >= x) {
+                array_insert(A, size, mid+2, x);
+                break;
+            } else {
+                start = mid;
+            }
+
+        }
+    }
+    print_array(A,size+1);
+}
+void main2_23(){
+    int x[20] = {1,2,3,5,6,7,8,30,11,12,13,};
+    ex23(x,20,7,4);
+//    int x1[10] = {1,2,3,5,6};
+//    array_insert(x1,10,4,4);
+//    print_array(x1,6);
+}
+void ex24(int x[], int len){
+    int number;
+    cout<<"enter number: ";
+    cin>>number;
+    int start=0,end=len-1,mid;
+    while (start < end){
+        mid=end/2;
+        if (number<x[mid]){
+            if (x[mid-1]<number){
+                array_insert(x,len,mid+1,number);
+                break;
+            } else if (number<x[mid-1]){
+                end = mid;
+            } else
+                break;
+        }
+        else if (number>x[mid]){
+                if (x[mid + 1] > number) {
+                    array_insert(x, len, mid + 2, number);
+                    break;
+                } else {
+                    if (x[mid + 1] < number) {
+                        start = mid;
+                    } else
+                        break;
+                }
+        } else
+            break;
+        print_array(x,10);
+
+    }
+    print_array(x,10);
+}
+void main2_24(){
+    int x[50] = {1,4,6,7};
+    ex24(x,50);
+}
 int main2(){
 //    main2_8();
 //    main2_12();
 //    main2_14();
-    main2_15();
+//    main2_15();
+//    main2_16();
+    main2_24();
     return 0;
 }
