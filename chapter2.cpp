@@ -82,6 +82,42 @@ template <typename T> LinkList CreateSingleList(T array[], int length, bool is_h
 
 
 }
+
+template <typename T> LinkCharList CreateSingleCharList(T array[], int length, bool is_head, bool is_cycle){
+    if (is_head) {
+        auto head = new LCharNode;
+        auto p = head;
+        head->next = nullptr;
+        for (int i = 0; i < length; i++, p = p->next) {
+//            cout<<array[i]<<"$$$$\t";
+            auto temp = new LCharNode;
+            temp->next = nullptr;
+            temp->data = array[i];
+            p->next = temp;
+        }
+        if (is_cycle)
+            p->next=head;
+        return head;
+
+    } else{
+        if (!length)
+            return nullptr;
+        auto head = new LCharNode{.data=array[0], .next=nullptr};
+        auto p=head;
+        for (int i = 1; i < length ; ++i,p=p->next) {
+            auto temp = new LCharNode;
+            temp->data = array[i];
+            temp->next = nullptr;
+            p->next = temp;
+        }
+        if (is_cycle){
+            p->next=head;
+        }
+        return head;
+    }
+
+
+}
 void print_singlelist(LinkList &L, bool is_head, bool address,bool  is_cycle){
     LinkList p,end;
     if (is_head) p=L->next; else p=L;
@@ -90,6 +126,17 @@ void print_singlelist(LinkList &L, bool is_head, bool address,bool  is_cycle){
            cout<<p->data;
            if (address) cout<<" "<<p;
            if (p->next!=end) cout<<" -> ";
+    }
+    cout<<endl;
+}
+void print_singlecharlist(LinkCharList &L, bool is_head, bool address,bool  is_cycle){
+    LinkCharList p,end;
+    if (is_head) p=L->next; else p=L;
+    if (is_cycle) end = L;else end= nullptr;
+    for (; p!= end ; p=p->next) {
+        cout<<p->data;
+        if (address) cout<<" "<<p;
+        if (p->next!=end) cout<<" -> ";
     }
     cout<<endl;
 }
@@ -952,7 +999,7 @@ void ex29(LinkList &L){
         }
         q = r;
         if (r) r = r->next;
-        print_singlelist(L);
+//        print_singlelist(L);
     }
 }
 void main2_29(){
@@ -996,12 +1043,137 @@ void main2_31(){
     LinkList l = CreateSingleList(x,16, true,true);
     ex31(l);
 }
+void ex32(LinkList& L){
+    ex29(L);
+    print_singlelist(L, true,true);
+    LinkList P= nullptr,Q= nullptr,p=P,q=Q,p1=L->next,r1 = p1->next;
+    while (p1){
+        //偶数
+        cout<<"p1 "<<p1<<"\t"<<p1->data<<"\t"<<" r1 "<<r1<<endl;
+        if (p1->data%2==0){
+            if (!q){
+                q=Q=p1;
+                q->next= nullptr;
+            } else{
+                q->next = p1;
+                q = p1;
+                q->next = nullptr;
+            }
+        } else {
+            //奇数
+            if (!p){
+                p = P=p1;
+                p1->next = nullptr;
+            }else{
+                p->next = p1;
+                p = p1;
+                p->next = nullptr;
+            }
+        }
+        p1 = r1;
+        if (p1) r1 = r1->next;
+
+    }
+    print_singlelist(Q, false);
+    print_singlelist(P, false);
+
+}
+void main2_32(){
+    int x[] = {2,4,3,5,7,8,1,9,6,10};
+    LinkList l = CreateSingleList(x,10);
+    ex32(l);
+}
+void ex33(LinkList &L){
+    auto B = new LNode{0, nullptr};
+    auto C = new LNode{0, nullptr};
+    LinkList p=L->next,b=B,c=C;
+    while (p){
+        if (p->data < 0){
+            b->next = p;
+            p = p->next;
+            b=b->next;
+            b->next= nullptr;
+        }else if (p->data >0){
+            c->next=p;
+            p=p->next;
+            c = c->next;
+            c->next=nullptr;
+        } else
+            continue;
+    }
+    print_singlelist(B);
+    print_singlelist(C);
+}
+void main2_33(){
+    int x[] = {-1,-2,-3,-4,-5,1,2,3,4,5};
+    LinkList l = CreateSingleList(x,10);
+    ex33(l);
+}
+void ex34(LinkList& L){
+    auto B = new LNode {0, nullptr};
+    auto A=L;
+    LinkList p=L->next,b=B,a=A;
+    A->next= nullptr;
+    B->next= nullptr;
+    while (p){
+        cout<<p->data%2<<"\t"<<endl;
+        if(p->data%2 == 0){
+            a->next = p;
+            p=p->next;
+            a = a->next;
+            a->next=nullptr;
+            print_singlelist(A);
+        }else{
+            b->next=p;
+            p=p->next;
+            b = b->next;
+            b->next=nullptr;
+        }
+        print_singlelist(A);
+        print_singlelist(B);
+    }
+
+}
+void main2_34(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    LinkList l = CreateSingleList(x,9);
+    ex34(l);
+}
+void ex35(LinkCharList& L){
+    auto A = new LCharNode {'\0', nullptr};
+    auto B = new LCharNode {'\0', nullptr};
+    auto C = new LCharNode {'\0', nullptr};
+    LinkCharList p=L->next,a=A,b=B,c=C;
+    while (p){
+        if (isalpha(p->data)){
+            a->next = p;
+            p = p->next;
+            a=a->next;
+            a->next= nullptr;
+        } else if (isdigit(p->data)){
+            b->next=p;
+            p=p->next;
+            b = b->next;
+            b->next= nullptr;
+        }else{
+            //其他字符
+            c ->next = p;
+            p = p->next;
+            c = c->next;
+            c->next = nullptr;
+        }
+    }
+    print_singlecharlist(A);
+    print_singlecharlist(B);
+    print_singlecharlist(C);
+}
+void main2_35(){
+    char x[] = "Hellp12345,!!!!oooo";
+    LinkCharList l = CreateSingleCharList(x,19);
+//    print_singlecharlist(l);
+    ex35(l);
+}
 int main2(){
-//    main2_8();
-//    main2_12();
-//    main2_14();
-//    main2_15();
-//    main2_16();
-    main2_31();
+    main2_35();
     return 0;
 }
