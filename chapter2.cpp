@@ -8,7 +8,7 @@ using namespace std;
 
 int get_head_array_length(LinkList &head){
     /*
-     * é“¾è¡¨*/
+     * Á´±í*/
     auto p = head->next;
     int i;
     for (i = 1; p->next!= nullptr ; p=p->next,++i);
@@ -51,7 +51,7 @@ template <typename T> LinkList CreateSingleList(T array[], int length, bool is_h
             p->next = temp;
         }
 //            p = head->next;
-//            cout<<"ç”Ÿæˆçš„å•é“¾è¡¨ä¸ºï¼š\t";
+//            cout<<"Éú³ÉµÄµ¥Á´±íÎª£º\t";
 //            while (p){
 //                cout<<p->data<<" "<<p;
 //                p = p->next;
@@ -98,6 +98,10 @@ void print_singlelist(LinkList &L, bool is_head, bool address,bool  is_cycle){
 
 
 template<typename T>void reverse_array(T &array, int start, int end){
+    /*
+     * start: 1~n
+     * end:1~n
+     */
     if (start < 1||start > end) return;
     int mid = (end+start)/2;
     for (int i = start-1,j=end-1; i < mid ; ++i,--j) {
@@ -106,7 +110,7 @@ template<typename T>void reverse_array(T &array, int start, int end){
         array[j] = temp;
     }
 }
-//é€’å½’åå‘è¾“å‡º
+//µİ¹é·´ÏòÊä³ö
 void r_print(LinkList &L) {
     if (L->next != nullptr)
         r_print(L->next);
@@ -116,18 +120,18 @@ LinkList ex1(LinkList &L,int n){
     LinkList p = L->next, befor, after;
     int i;
     for (i = 1; i < n/2; ++i,p = p->next);
-    if (n%2 == 0) // nä¸ºå¶æ•°
+    if (n%2 == 0) // nÎªÅ¼Êı
     {
         after = p->next;
         p->next = nullptr;
     }
-    else //nä¸ºå¥‡æ•°
+    else //nÎªÆæÊı
     {
         after = p->next->next;
         p->next->next = nullptr;
     }
     befor = L->next;
-    // å°†afteré€†ç½®
+    // ½«afterÄæÖÃ
     LinkList p2=nullptr,q=after,r=q->next;
     while (r) {
             q->next = p2;
@@ -135,11 +139,11 @@ LinkList ex1(LinkList &L,int n){
             q = r;
             r = r->next;
     }
-    //å¤„ç†æœ€åçš„è¿æ¥
+    //´¦Àí×îºóµÄÁ¬½Ó
     q->next =p2;
     after = q;
 
-    //å°†afteræ’å…¥åˆ°beforeä¸­
+    //½«after²åÈëµ½beforeÖĞ
     print_singlelist(befor, false);
     while (after){
         auto temp_before = befor->next;
@@ -198,7 +202,7 @@ int ex4(const int A[], const int B[], int len){
 //    print_array(C,len);
     return C[len-1];
 }
-//Elemä¸ºcharç±»å‹
+//ElemÎªcharÀàĞÍ
 LinkList ex5(LinkList &str1,LinkList &str2){
     LinkList long_list, short_list,p;
     int str1_len, str2_len,long_len,short_len;
@@ -215,13 +219,13 @@ LinkList ex5(LinkList &str1,LinkList &str2){
         long_len = str2_len;
         short_len = str1_len;
     }
-    //æ‰¾åˆ°é•¿é“¾è¡¨çš„é‡Œ ä¸çŸ­é“¾è¡¨é•¿åº¦ç›¸åŒçš„å‰ä¸€èŠ‚ç‚¹
+    //ÕÒµ½³¤Á´±íµÄÀï Óë¶ÌÁ´±í³¤¶ÈÏàÍ¬µÄÇ°Ò»½Úµã
     p = long_list;
     for (int i = 0; i <long_len-short_len ; ++i) {
         p = p->next;
     }
 
-    //å¼€å§‹æ‰¾ä¸¤ä¸ªé“¾è¡¨çš„ç¬¬ä¸€ä¸ªç›¸åŒèŠ‚ç‚¹
+    //¿ªÊ¼ÕÒÁ½¸öÁ´±íµÄµÚÒ»¸öÏàÍ¬½Úµã
     while (p != nullptr){
         if (p->data == short_list->data)
             return p;
@@ -301,8 +305,8 @@ void ex7(LinkList &A, LinkList &B){
 }
 
 void ex8(LinkList& l1,LinkList& l2){
-    //l1å‡åº  l2é™åº
-/*    //å°†l2å‡åº æ’å…¥æ’åº
+    //l1ÉıĞò  l2½µĞò
+/*    //½«l2ÉıĞò ²åÈëÅÅĞò
     LinkList p ,pre, q = l2->next->next, r= q->next;
     l2->next->next = nullptr;
     while (q!= nullptr){
@@ -325,7 +329,7 @@ void ex8(LinkList& l1,LinkList& l2){
             r = r->next;
         print_singlelist(l2);
     }*/
-    //å°†l2é€†ç½®
+    //½«l2ÄæÖÃ
     LinkList p,q=l2->next->next,r=q->next;
     l2->next->next = nullptr;
     while (q!= nullptr){
@@ -335,7 +339,7 @@ void ex8(LinkList& l1,LinkList& l2){
         if (r)
             r = r->next;
     }
-    //å°†l1 å’Œl2å½’å¹¶æ’åºprint_singlelist(head);
+    //½«l1 ºÍl2¹é²¢ÅÅĞòprint_singlelist(head);
     LinkList a=l1->next,b=l2->next,head=l1;
     head->next= nullptr;
     while (a!= nullptr && b!= nullptr){
@@ -546,8 +550,8 @@ LinkList ex17(LinkList& L1,LinkList& L2,int L1_LEN, int L2_LEN){
 
 }
 void ex18(LinkList& ha,LinkList&hb){
-    //ha ä¸ºå•é¡¹é“¾è¡¨
-    //hb ä¸ºå•å‘å¾ªç¯åˆ—è¡¨
+    //ha Îªµ¥ÏîÁ´±í
+    //hb Îªµ¥ÏòÑ­»·ÁĞ±í
     auto t = new LNode;
     t->next = hb->next;
     hb->next = ha->next->next;
@@ -638,7 +642,7 @@ void main2_8() {
     ex8(l1, l2);
 }
 void main_2_9(){
-    //åŒex8()
+    //Í¬ex8()
 }
 void main2_10(){
     int x1[] = {1,3,5,7,8,90};
@@ -649,7 +653,7 @@ void main2_10(){
 
 }
 void main2_11(){
-    //åŒex11()
+    //Í¬ex11()
 }
 void main2_12(){
     int x1[] = {1,3,5,7,8,9,90};
@@ -659,7 +663,7 @@ void main2_12(){
     ex12(l1,l2);
 }
 void main2_13(){
-    //åŒex12()
+    //Í¬ex12()
 }
 void main2_14(){
     int x1[] = {1,3,5,7,8,9,90};
@@ -816,19 +820,22 @@ void ex24(int x[], int len){
     int number;
     cout<<"enter number: ";
     cin>>number;
-    int start=0,end=len-1,mid;
-    while (start < end){
-        mid=end/2;
-        if (number<x[mid]){
-            if (x[mid-1]<number){
-                array_insert(x,len,mid+1,number);
-                break;
-            } else if (number<x[mid-1]){
-                end = mid;
-            } else
-                break;
-        }
-        else if (number>x[mid]){
+    if (number>x[len-1]){
+        x[len] = number;
+//        return;
+    } else {
+        int start = 0, end = len - 1, mid;
+        while (start < end) {
+            mid = end / 2;
+            if (number < x[mid]) {
+                if (x[mid - 1] < number) {
+                    array_insert(x, len, mid + 1, number);
+                    break;
+                } else if (number < x[mid - 1]) {
+                    end = mid;
+                } else
+                    break;
+            } else if (number > x[mid]) {
                 if (x[mid + 1] > number) {
                     array_insert(x, len, mid + 2, number);
                     break;
@@ -838,16 +845,156 @@ void ex24(int x[], int len){
                     } else
                         break;
                 }
-        } else
-            break;
-        print_array(x,10);
+            } else
+                break;
+            cout << start << "\t" << end << endl;
+            print_array(x, 10);
 
+        }
     }
     print_array(x,10);
 }
 void main2_24(){
     int x[50] = {1,4,6,7};
-    ex24(x,50);
+    ex24(x,4);
+}
+void ex25(int x[], int len, int item){
+    int j=-1,i=0;
+    while (i<len){
+        if (x[i]==item)
+            i++;
+        else{
+            x[++j] = x[i++];
+        }
+    }
+    print_array(x,j+1);
+}
+void main2_25(){
+    int x[14] = {1,2,3,4,5,5,6,5,7,8,9,9,10};
+    ex25(x,13,5);
+}
+void ex26(int x[],int len, int k){
+    reverse_array(x,len-k+1,len);
+    reverse_array(x,1,len-k);
+    reverse_array(x,1,len);
+    print_array(x,len);
+}
+void main2_26(){
+    int x[15] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14},k=4;
+//    cout<<get_array_len(x);
+    ex26(x,14,k);
+}
+void ex27(int x){
+    int qian = x/1000;
+    int bai = (x -qian*1000)/100;
+    int shi = (x - qian*1000-bai*100)/10;
+    int yuan = x - qian*1000-bai*100-shi*10;
+    cout<<qian<<"Ç§ "<<bai<<"°Ù "<<shi<<"Ê® "<<yuan<<"Ôª  "<<endl;
+
+
+}
+void main2_27(){
+    int x = 123456;
+    ex27(x);
+}
+void ex28(LinkList& L){
+    //²»´øÍ·½Úµãµ¥Á´±í²åÈëÅÅĞò
+    LinkList p,pre,q=L->next,r=q->next;
+    L->next = nullptr;
+    auto head = new LNode;
+    head->next = L;
+    while (q){
+        p=head;
+        while (p->next){
+            if (p->next->data > q->data){
+                q->next = p->next;
+                p->next = q;
+                break;
+            }
+            p=p->next;
+
+        }
+        if (!p->next){
+            p->next = q;
+            q->next = nullptr;
+        }
+        q = r;
+        if (q) r = r->next;
+
+    }
+    delete head;
+    print_singlelist(L,false);
+
+}
+void main2_28(){
+    int x[12] = {1,3,20,6,4,6,32,5,8,90,3,};
+//    cout<<get_array_len(x);
+    LinkList l1 = CreateSingleList(x,11, false);
+    ex28(l1);
+}
+void ex29(LinkList &L){
+    //´øÍ·½áµãµÄµ¥Á´±íÅÅĞò
+    LinkList p,q=L->next->next,r=q->next;
+    L->next->next= nullptr;
+    while (q){
+        p=L;
+        while (p->next){
+            if (p->next->data > q->data){
+                q->next = p->next;
+                p->next=q;
+                break;
+            }
+            p = p->next;
+        }
+        if (!p->next){
+            p->next = q;
+            q->next = nullptr;
+        }
+        q = r;
+        if (r) r = r->next;
+        print_singlelist(L);
+    }
+}
+void main2_29(){
+    int x[11] = {1,4,3,67,43,23,23,14,36,18};
+//    cout<<get_array_len(x);
+    LinkList l = CreateSingleList(x,10);
+    ex29(l);
+}
+void main2_30(){
+    //Í¬29Ìâ
+}
+void ex31(LinkList & L){
+    //µ¥Ñ­»·ÁĞ±íÈ¥ÖØÅÅĞò
+    LinkList p,q = L->next->next,r=q->next;
+    L->next->next = L;
+    while (q != L){
+        p=L;
+        while (p->next){
+            if (p->next->data > q->data){
+                q ->next = p->next;
+                p->next = q;
+                break;
+            } else if (p->next->data == q->data){
+                delete q;
+                break;
+            }
+            p = p->next;
+        }
+        if (!p->next){
+            p->next = q;
+            q->next = L;
+        }
+        q = r;
+        if (r!=L) r = r->next;
+        print_singlelist(L,true,false,true);
+    }
+}
+void main2_31(){
+    int x[17] = {1,3,6,9,2,4,7,15,12,43,25,3,4,6,42,4,33,};
+//    cout<<get_array_len(x);
+    LinkList l = CreateSingleList(x,16, true,true);
+    ex31(l);
 }
 int main2(){
 //    main2_8();
@@ -855,6 +1002,6 @@ int main2(){
 //    main2_14();
 //    main2_15();
 //    main2_16();
-    main2_24();
+    main2_31();
     return 0;
 }
