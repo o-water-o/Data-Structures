@@ -30,5 +30,12 @@ void print_singlecharlist(LinkCharList &L,bool is_head=true, bool address=false,
 int get_head_array_length(LinkList &head);
 int main2();
 
+//双向链表
+typedef struct DLinkList{
+    struct DLinkList *llink,*rlink;
+    int data;
+}DLinkList, *PDLinkList;
+PDLinkList CreateDoublyLinkList(const int x[],int len);
+void print_doubly_list(PDLinkList&L);
 
 #endif //STUDY_CHAPTER2_H

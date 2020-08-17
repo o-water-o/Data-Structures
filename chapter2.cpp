@@ -163,6 +163,27 @@ void r_print(LinkList &L) {
         r_print(L->next);
     cout<<L->data<<"\t";
 }
+
+//双向链表
+PDLinkList CreateDoublyLinkList(const int x[],int rows){
+    auto head = new DLinkList{nullptr, nullptr,0};
+    PDLinkList p=head;
+    for (int i=0;i<rows;i++){
+        auto temp = new DLinkList{.llink=p,.rlink=nullptr,.data=x[i]};
+        p->rlink = temp;
+        p = p->rlink;
+    }
+    return head;
+}
+void print_doubly_list(PDLinkList&L){
+    auto p = L->rlink;
+    cout<<"双向链表：";
+    while (p){
+        cout<<p->data<<"\t";
+        p=p->rlink;
+    }
+}
+
 LinkList ex1(LinkList &L,int n){
     LinkList p = L->next, befor, after;
     int i;
@@ -1173,7 +1194,151 @@ void main2_35(){
 //    print_singlecharlist(l);
     ex35(l);
 }
+void ex36(LinkList& L){
+    auto L2 = new LNode{0,nullptr};
+    auto L1 = L;
+    LinkList p=L->next,r=p->next,l1 = L1,l2 = L2;
+    L1->next = nullptr;
+    int num=0;
+    while (p){
+        num++;
+        if (num%2==0){
+            //偶数
+            p->next = L2->next;
+            L2->next = p;
+            p =r;
+            if (p) r = r->next;
+        } else{
+            //奇数
+            l1->next = p;
+            l1 = p;
+            p = r;
+            if (r) r=r->next;
+            l1->next=nullptr;
+
+        }
+    }
+    print_singlelist(L1);
+    print_singlelist(L2);
+}
+void main2_36(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    LinkList l = CreateSingleList(x,9);
+    ex36(l);
+}
+void ex37(LinkList& L){
+    LinkList min_ptr= L,temp= nullptr; // min_ptr保存最小值的前一节点
+    auto p=L->next;//从 第二个节点开始
+    while (p->next){
+        if (min_ptr->next->data > p->next->data){
+            min_ptr = p;
+        }
+        p =p->next;
+    }
+    temp = min_ptr->next;
+    min_ptr->next = temp->next;
+    cout<<temp->data<<endl;
+    delete temp;
+    print_singlelist(L);
+
+}
+void main2_37(){
+    int x[] = {2,1,-3,5,-9,6,4,-10,3};
+    LinkList L = CreateSingleList(x,9);
+    ex37(L);
+}
+void ex38(LinkList& L){
+    LinkList p = L->next,min_pre=L,min = min_pre->next;
+    while (p->next){
+        if (p->next->data<min->data){
+            min_pre = p;
+            min = min_pre->next;
+        }
+        p = p->next;
+    }
+    cout<<min->data<<endl;
+    min_pre->next = min->next;
+    min->next = L->next;
+    L->next = min;
+    print_singlelist(L);
+}
+void main2_38(){
+    int x[] = {3,4,5,6,1,2,-2,9,19};
+    LinkList L = CreateSingleList(x,9);
+    ex38(L);
+}
+void ex39(PDLinkList& L){
+    auto max=L->rlink,p=L->rlink->rlink;
+    while (p){
+        if (p->data > max->data){
+            max = p;
+        }
+        p = p->rlink;
+    }
+    cout<<max->data<<endl;
+    max->llink->rlink = max->rlink;
+    max->rlink->llink = max->llink;
+    max->rlink = L->rlink;
+    L->rlink = max;
+    max->llink = L;
+    print_doubly_list(L);
+}
+void main2_39(){
+    int x[] = {1,2,3,4,55,6,7,8};
+    auto L =CreateDoublyLinkList(x,8);
+    ex39(L);
+}
+void ex40(int x[], int len, int num){
+    int start=0,end=len-1,mid,num_index=-1;
+    while (start<=end){
+        mid = (start + end)/2;
+        if (x[mid] == num){
+            num_index = mid;
+            break;
+        } else if (x[mid]< num){
+            start = mid +1;
+        }else{
+            end = mid-1;
+        }
+    }
+    if (num_index == -1){
+        start = 0;end = len-1;
+        while (start<end){
+            mid = (start + end)/2;
+            if (num < x[mid]){
+                if (x[mid-1] < num){
+                    array_insert(x,len,mid+1,num);
+                    break;
+                } else{
+                    end = mid-1;
+                }
+            }else {
+                if (num < x[mid+1]){
+                    array_insert(x,len,mid+2,num);
+                    break;
+                }else{
+                    start = mid+1;
+                }
+            }
+            cout<<start<<"~"<<end<<endl;
+        }
+        if (end<=start){
+            x[len] = num;
+        }
+    } else{
+        if(num_index!=len-1){
+            int temp = x[num_index];
+            x[num_index] = x[num_index+1];
+            x[num_index+1] = temp;
+        }
+    }
+   print_array(x,len+1);
+}
+void main2_40(){
+    int x[20] = {-1,2,3,5,7,8};
+    ex40(x,6,3);
+}
 int main2(){
-    main2_35();
+    main2_40();
     return 0;
 }
