@@ -136,7 +136,7 @@ void print_singlecharlist(LinkCharList &L, bool is_head, bool address,bool  is_c
     for (; p!= end ; p=p->next) {
         cout<<p->data;
         if (address) cout<<" "<<p;
-        if (p->next!=end) cout<<" -> ";
+//        if (p->next!=end) cout<<" -> ";
     }
     cout<<endl;
 }
@@ -165,7 +165,7 @@ void r_print(LinkList &L) {
 }
 
 //双向链表
-PDLinkList CreateDoublyLinkList(const int x[],int rows){
+PDLinkList CreateDoublyLinkList(const int x[],int rows, bool is_cycle){
     auto head = new DLinkList{nullptr, nullptr,0};
     PDLinkList p=head;
     for (int i=0;i<rows;i++){
@@ -173,12 +173,18 @@ PDLinkList CreateDoublyLinkList(const int x[],int rows){
         p->rlink = temp;
         p = p->rlink;
     }
+    if (is_cycle){
+        p->rlink = head;
+        head->llink = p;
+    }
     return head;
 }
-void print_doubly_list(PDLinkList&L){
+void print_doubly_list(PDLinkList&L, bool is_cycle){
     auto p = L->rlink;
+    PDLinkList end= nullptr;
+    if (is_cycle) end=L;
     cout<<"双向链表：";
-    while (p){
+    while (p!=end){
         cout<<p->data<<"\t";
         p=p->rlink;
     }
@@ -1338,7 +1344,214 @@ void main2_40(){
     int x[20] = {-1,2,3,5,7,8};
     ex40(x,6,3);
 }
+bool ex41(PDLinkList & L){
+    auto head = L->rlink,tail= L->llink;
+    while (true){
+        cout<<head->data<<"\t"<<tail->data<<endl;
+        if (head == tail){
+            if (head->data == tail->data){
+                return true;
+            }
+            else{
+                cout<<"false"<<endl;
+                return false;
+            }
+        }else {
+            if (head->rlink == tail or tail->llink == head){
+                if (head->data == tail->data){
+                    return true;
+                }
+                else{
+                    cout<<"false"<<endl;
+                    return false;
+                }
+            }
+        }
+        if (head->data == tail->data){
+            head = head->rlink;
+            tail = tail->llink;
+        }
+        else{
+            cout<<"false"<<endl;
+            return false;
+        }
+
+    }
+//    return true;
+}
+void main2_41(){
+    int x1[] = {1,2,3,4,3,2,1};
+    int x2[] = {1,2,3,4,4,3,2,1};
+    auto L = CreateDoublyLinkList(x1,7,true);
+    cout<<ex41(L);
+}
+void test(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = CreateDoublyLinkList(x,9,true);
+    print_doubly_list(L,false);
+}
+void ex42(LinkList& A,LinkList& B, int i,int len, int j){
+    int count=0,dcount=0,flag=-1;
+    LinkList a=A->next,a_pre=A,b=B->next;
+    while (a){
+        count++;
+        if (count==i){
+            flag = 1;
+        }
+        if (dcount<len && flag==1){
+            dcount ++;
+            a_pre->next = a->next;
+            delete a;
+            a = a_pre->next;
+//            print_singlelist(A);
+        }else{
+            a_pre = a;
+            a = a->next;
+        }
+    }
+    count = 0;
+    while (b){
+       count++;
+       if (count == j-1){
+           a_pre->next = b->next;
+           b->next = A->next;
+       }else{
+           b = b->next;
+       }
+    }
+    print_singlelist(A);
+    print_singlelist(B);
+
+}
+void main2_42(){
+    int a[] = {1,2,3,4,5,6,7,8,9};
+    int b[] = {11,12,13,14,15,16,17,18,19};
+    auto A = CreateSingleList(a,9);
+    auto B = CreateSingleList(b,9);
+    int i=2,j=4,len=3;
+    ex42(A,B,i,len,j);
+
+}
+PDLinkList create_linklist_43(const int x[], int len){
+    auto L = new DLinkList {nullptr, nullptr,0},p=L;
+    for (int i = 0; i <len ; ++i) {
+        auto temp = new DLinkList {nullptr, nullptr,x[i]};
+        p->rlink = temp;
+        p = p->rlink;
+    }
+    p->rlink = L;
+    return L;
+}
+void ex43(PDLinkList& L){
+    PDLinkList pre=L,p=L->rlink;
+    while (p!=L){
+        p->llink = pre;
+        pre = p;
+        p=p->rlink;
+    }
+    L->llink = pre;
+    p = pre;
+    while (p!=L){
+        cout<<p->data<<"\t";
+        p =p->llink;
+    }
+}
+void main2_43(){
+    int x[] = {1,2,3,4,5,6,7};
+    auto L = create_linklist_43(x,7);
+    ex43(L);
+//    print_doubly_list(L,true);
+}
+bool ex44(LinkList& L){
+    int count=0,flag=-1;
+    LinkList p=L->next,pre=L;
+    while (p){
+        count ++;
+        if (count == 2){
+            flag = 1;
+        }
+        if (flag==1){
+            if (count*count-pre->data == p->data ){
+                pre = p;
+                p = p->next;
+            }else{
+                return false;
+            }
+        }else{
+            pre=p;
+            p=p->next;
+        }
+    }
+    return true;
+}
+void main2_44(){
+    int x[] = {1,3,6,10,15,21};
+    auto L = CreateSingleList(x,6);
+    cout<<ex44(L);
+}
+bool ex45(LinkList&A, LinkList&B){
+    LinkList a=A->next,b=B->next,p;
+    while (b&&a){
+        if (a->data == b->data){
+            a = a->next;
+            b = b->next;
+        }else{
+            a = a->next;
+        }
+    }
+    return b == nullptr;
+}
+void main2_45(){
+    int a[] = {1,2,3,5,6,7,8,9};
+    int b[] = {1,2,3,6,8};
+    auto A = CreateSingleList(a,get_array_len(a));
+    auto B = CreateSingleList(b,get_array_len(b));
+    cout<<ex45(A,B);
+}
+void ex46(LinkCharList& A,LinkCharList& B){
+    LinkCharList a=A->next,b=B->next,a_pre=A,pre= nullptr,s= nullptr,p,r;
+    int flag=-1;
+    while (a){
+        if (a->data == b->data&&flag==-1){
+            pre = a_pre;
+            flag = 1;
+        }
+        if (flag==1&& a->data!=b->data){
+            s = a;
+            break;
+        }else if (flag==1&& a->data==b->data){
+            a_pre = a;
+            a = a->next;
+            b = b->next;
+        }else{
+            a_pre = a;
+            a = a->next;
+        }
+//        cout<<a->data<<endl;
+    }
+    cout<<pre->data<<endl;
+    cout<<s->data<<endl;
+    // 从第二个元素开始插入倒置
+    p = pre->next->next;r = p->next;
+    pre->next->next = s;
+    while (p!=s){
+        p->next = pre->next;
+        pre->next = p;
+        p =r;
+        if (r) r = r->next;
+    }
+    print_singlecharlist(A);
+}
+void main2_46(){
+    char a[] = "hello,world!how are you?";
+    char b[] = "world";
+    auto A = CreateSingleCharList(a,get_array_len(a));
+    auto B = CreateSingleCharList(b,get_array_len(b));
+    ex46(A,B);
+//    print_singlecharlist(A);
+}
 int main2(){
-    main2_40();
+    main2_46();
+//    test();
     return 0;
 }
