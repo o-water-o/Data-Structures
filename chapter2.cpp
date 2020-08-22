@@ -1655,8 +1655,187 @@ void main2_50(){
     int x[] = {1,2,3,4,5,6,7,8,9};
     ex50(x,9);
 }
+void ex51(LinkList & L){
+    //带头节点单链表排序
+    LinkList p=L->next->next,q,r= nullptr;
+    L->next->next= nullptr;
+    while (p){
+        r = p->next;
+        p->next = L->next;
+        L->next = p;
+        p = r;
+    }
+    print_singlelist(L);
+}
+void main2_51(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = CreateSingleList(x,9);
+    ex51(L);
+}
+void ex52(LinkList& L){
+    //逆置单循环链表
+    LinkList p=L->next->next,r= nullptr;
+    L->next->next = L;
+    while (p!=L){
+        r = p->next;
+        p->next = L->next;
+        L->next = p;
+        p=r;
+    }
+    print_singlelist(L,true,false,true);
+}
+void main2_52(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = CreateSingleList(x,get_array_len(x),true,true);
+    ex52(L);
+}
+void ex53(LinkList& L){
+    LinkList tail=L,p= nullptr,r= nullptr;
+    for(;tail->next!=L;tail=tail->next);
+    auto a1=tail->next->next;//从第一个节点开始
+    p = a1->next;
+    auto a1n = new LNode {a1->data,nullptr};
+    a1n->next = L;
+    tail->next=a1n;
+    while (p!=tail){
+        auto temp =new LNode {p->data,tail->next};
+        tail->next = temp;
+        p=p->next;
+    }
+    print_singlelist(L,true,false,true);
+}
+void main2_53(){
+    int x[] = {1,2,3,4,5};
+    auto L = CreateSingleList(x,get_array_len(x),true,true);
+    ex53(L);
+}
+void ex54(LinkList& L){
+    if (!L){
+        return;
+    }
+    ex54(L->next);
+    cout<<L->data<<"\t";
+}
+void main2_54(){
+    int x[] = {1,2,3,4};
+    auto L = CreateSingleList(x,get_array_len(x), false);
+    ex54(L);
+}
+void ex55(LinkList& L){
+    auto min=L->next,p=L->next->next;
+    while (p){
+        if (p->data<min->data){
+            min = p;
+        }
+        p =p->next;
+    }
+    cout<<min->data<<endl;
+    if (min->data%2==0){
+        auto after=min->next;
+        min->next = after->next;
+        delete after;
+    }else{
+        auto after = min->next->data;
+        min->next->data = min->data;
+        min->data = after;
+    }
+    print_singlelist(L);
+}
+void main2_55(){
+    int x[] = {11,10,2,4,5,8};
+    auto L = CreateSingleList(x,get_array_len(x));
+    ex55(L);
+}
+void ex56(LinkList& L){
+    LinkList p=L->next;
+    while (p){
+        if (p->next&&p->data == p->next->data){
+            auto temp = p->next;
+            p->next = temp->next;
+            delete temp;
+        }else{
+            p = p->next;
+        }
+    }
+    print_singlelist(L);
+}
+void main2_56(){
+    int x[] = {7,10,10,21,30,42,42,42,51,70};
+    auto L = CreateSingleList(x,get_array_len(x));
+    ex56(L);
+}
+void main2_57(){
+    //同ex56
+}
+void ex58(LinkList& L, int value){
+    LinkList p=L->next,pre=L;
+    int count =0;
+    while (p){
+        if (p->data>value && pre->data != p->data){
+            count++;
+        }
+        pre=p;
+        p=p->next;
+    }
+    cout<<"(1)："<<count<<endl;
+    //(2)
+    auto a1=L->next;
+    p=a1->next;
+    LinkList r= nullptr;
+    a1->next = nullptr;
+    while (p){
+        if (p->data<value){
+            r = p->next;
+            p->next =L->next;
+            L->next =p;
+            p=r;
+        } else{
+            break;
+        }
+    }
+    cout<<a1->data<<endl;
+    a1->next = p;
+    cout<<"(2):";
+    print_singlelist(L);
+    //(3)
+    p=L->next;
+    pre=L;
+    while (p){
+        if (p->data>value&&p->data%2==0){
+            pre->next = p->next;
+            delete p;
+            p=pre->next;
+        }else{
+            pre=p;
+            p=p->next;
+        }
+    }
+    print_singlelist(L);
+}
+void main2_58(){
+    int x[] = {20,20,17,16,15,15,11,10,8,7,7,5,4};
+    reverse_array(x,1,13);
+//    print_array(x,get_array_len(x));
+    auto L = CreateSingleList(x,get_array_len(x));
+    ex58(L,10);
+};
+void ex59(LinkList& L, LinkList &P){
+    cout<<P->data<<endl;
+    LinkList p=L->next;
+    for (;p->next!=P;p=p->next);
+    auto after = p->next,after1 = after->next;
+    after->next = after1->next;
+    after1->next = after;
+    p->next =after1;
+    print_singlelist(L);
+}
+void main2_59(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = CreateSingleList(x,get_array_len(x));
+    ex59(L,L->next->next->next);
+}
 int main2(){
-    main2_49();
+    main2_59();
 //    test();
     return 0;
 }
