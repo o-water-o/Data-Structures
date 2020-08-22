@@ -1550,8 +1550,113 @@ void main2_46(){
     ex46(A,B);
 //    print_singlecharlist(A);
 }
+LinkList create_list_ex47(const int x[],int len,int i){
+    if (len<=3)
+        return nullptr;
+    LinkList head = new LNode{0, nullptr},p=head,q= nullptr;
+    for (int j=0;j<len;j++){
+        auto temp = new LNode{x[j], nullptr};
+        p->next = temp;
+        p = temp;
+        if (i==j+1)
+            q = temp;
+    }
+    p->next = q;
+    return head;
+//    print_singlelist(head);
+}
+void ex47(LinkList& L,int i){
+    LinkList p= L->next,pre = L,tail= nullptr,mid_pre= nullptr,mid;
+    for (int j=1;!mid_pre or p->next!=mid_pre->next;pre = p,p=p->next,j++){
+        if (i==j)
+            mid_pre = pre;
+    };
+    tail = p;
+    cout<<mid_pre->data<<"\t"<<tail->data<<endl;
+    //从mid->next节点开始倒置
+    tail->next = nullptr;
+    mid = mid_pre->next; // mid子序列第一个节点
+    p = mid->next; // p 初始化为子序列第二个节点
+    mid->next = nullptr;
+    auto r=p->next; //r为p节点的后继节点
+    while (p){
+        p->next = mid_pre->next;
+        mid_pre->next = p;
+        p=r;
+        if (r) r = r->next;
+    }
+    mid ->next = mid_pre->next;
+//    cout<<mid->data<<endl;
+    print_singlelist(L);
+}
+void main2_47(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = create_list_ex47(x,9,3);
+    ex47(L,3);
+}
+void main2_48(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    reverse_array(x,1,9);
+    print_array(x,9);
+}
+void ex49(LinkList& L, int type=1){
+    //就地逆置无头节点单链表
+    /*
+     * type=1 需要O(1)空间复杂度
+     * type=2 无须空间复杂度*/
+    switch (type) {
+        case 1:{
+            auto head = new LNode {0, L};
+            LinkList p= head->next->next,r= nullptr;
+            head->next->next= nullptr;
+            while (p){
+                r = p->next;
+                p->next = head->next;
+                head->next = p;
+                p = r;
+//                if (r) r = r->next;
+            }
+            print_singlelist(head->next, false);
+            delete head;
+            break;
+        }
+        case 2:{
+            LinkList p=L,q=nullptr,r;
+            while (p){
+                r = p->next;
+                p->next = q;
+                q = p;
+                p =r;
+            }
+            L=q;
+            print_singlelist(L, false);
+            break;
+        }
+        default:{
+            break;
+        }
+
+    }
+}
+void main2_49(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    auto L = CreateSingleList(x,9, false);
+    ex49(L,1);
+}
+LinkList ex50(const int x[], int len){
+    LinkList p,q=nullptr;
+    for (int i = 0; i <len ; ++i) {
+        auto temp = new LNode{x[i],q};
+        q = temp;
+    }
+    print_singlelist(q,false);
+}
+void main2_50(){
+    int x[] = {1,2,3,4,5,6,7,8,9};
+    ex50(x,9);
+}
 int main2(){
-    main2_46();
+    main2_49();
 //    test();
     return 0;
 }
