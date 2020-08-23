@@ -1650,6 +1650,7 @@ LinkList ex50(const int x[], int len){
         q = temp;
     }
     print_singlelist(q,false);
+    return q;
 }
 void main2_50(){
     int x[] = {1,2,3,4,5,6,7,8,9};
@@ -1834,8 +1835,283 @@ void main2_59(){
     auto L = CreateSingleList(x,get_array_len(x));
     ex59(L,L->next->next->next);
 }
+typedef struct StringNode{
+    string data;
+    int count;
+    struct StringNode *next;
+} StringNode,*PStringNode;
+void print_PStringNode(PStringNode& L){
+    for(auto pp=L->next;pp;pp=pp->next){
+        cout<<"data:"<<pp->data<<" count:"<<pp->count;
+        if (pp->next) cout<<" -> ";
+    }
+    cout<<"\n---"<<endl;
+}
+void ex60(){
+    PStringNode head = new StringNode {"",0, nullptr};
+    int k=2;
+    while (true){
+        int flag=-1;
+        auto p=head->next,pre=head;
+        string x,_exit="exit";
+        cout<<"Please enter word: ";
+        cin>>x;
+        if (x == _exit)
+            break;
+        //遍历链表查看有无数据相同的节点
+        while (p){
+           if (x == p->data){
+               p->count++;
+               flag=1;
+               break;
+           } else{
+               pre=p;
+               p = p->next;
+           }
+        }
+        //没有相同的节点
+        if (p== nullptr) {
+            auto temp = new StringNode{x, 1, nullptr};
+            pre->next = temp;
+        }
+    }
+    print_PStringNode(head);
+    /*输出出现次数最多的前k个单词*/
+    //按照出现次数从到小排序链表
+    PStringNode p=head->next->next,q,qpre,r= nullptr;
+    head->next->next= nullptr;
+    while (p){
+        qpre=head;
+        q = qpre->next;
+        r = p->next;
+        while (q){
+            if (p->count>q->count){
+                p->next = qpre->next;
+                qpre->next = p;
+                break;
+            }
+            qpre=q;
+            q = q->next;
+//            print_PStringNode(head);
+        }
+        if (q== nullptr){
+            qpre->next = p;
+            p->next= nullptr;
+        }
+        p=r;
+    }
+    print_PStringNode(head);
+    p=head->next;
+    for(int i=0;p;p=p->next,i++){
+        if (i<k){
+            cout<<p->data<<"\t";
+        }
+    }
+
+};
+
+void main2_60(){
+    ex60();
+}
+void ex61(PDLinkList& L){
+    auto a1 = L->rlink;
+    //删除第一个节点
+    L->rlink = a1->rlink;
+    a1->rlink->llink = L;
+
+    PDLinkList p=L->rlink;//第二个节点开始递增
+    while (p!=L){
+        if (p->data > a1->data){
+            a1->rlink = p;
+            a1->llink = p->llink;
+            p->llink = a1;
+            a1->llink->rlink = a1;
+            break;
+        }
+        p = p->rlink;
+    }
+    if (p==L){
+        p->llink->rlink=a1;
+        a1->llink = p;
+        a1->rlink = L;
+    }
+    print_doubly_list(L,true);
+}
+void main2_61(){
+    int x[] = {60,2,3,5,8,10,12};
+    auto L = CreateDoublyLinkList(x,get_array_len(x),true);
+    ex61(L);
+};
+void main2_62(){
+    //双链表插入，见ex61
+}
+typedef struct StaticNode{
+    string data;
+    int llink=0,rlink=0;
+}StaticNode,*point_static_node;
+void print_static_node(StaticNode L[],int len){
+    int first=0;
+    for (int i=1;i<=len;i++){
+        if (L[i].llink == 0){
+            first = i;
+        }
+    }
+    int p = first;
+    while (p!=0){
+        cout<<L[p].data;
+        p = L[p].rlink;
+        if (p!=0)
+            cout<<" -> ";
+    }
+    cout<<endl;
+}
+void ex63(StaticNode L[],int len, const string& name){
+    int av = len+1,p=1,pre;
+    L[av].data = name;
+    if (L[p].data > name){
+        while (p!=0){
+            if (name> L[p].data){
+                L[av].rlink = L[p].rlink;
+                L[av].llink = p;
+                L[pre].llink = av;
+                L[p].rlink=av;
+                break;
+            }else{
+                pre=p;
+                p = L[p].llink;
+            }
+        }
+        if (p==0){
+            L[av].rlink = pre;
+            L[av].llink = 0;
+            L[pre].llink = av;
+        }
+        print_static_node(L,len+1);
+    }else {
+        while (p!=0){
+            if (L[p].data >name){
+                L[av].rlink = p;
+                L[av].llink = pre;
+                L[pre].rlink = av;
+                L[p].llink = av;
+                break;
+            }else{
+                pre=p;
+                p = L[p].rlink;
+            }
+        }
+        if (p==0){
+            L[av].llink = pre;
+            L[av].rlink = 0;
+            L[pre].rlink = av;
+        }
+        print_static_node(L,len+1);
+    }
+}
+void main2_63(){
+    //静态链表
+    StaticNode user[20];
+    user[1] = {"Liu",6,5};
+    user[2] = {"Chan",4,9};
+    user[3] = {"Wang",5,7};
+    user[4] = {"Bao",0,2};
+    user[5] = {"Mai",1,3};
+    user[6] = {"Dong",8,1};
+    user[7] = {"Xi",3,0};
+    user[8] = {"Deng",9,6};
+    user[9] = {"Cuang",2,8};
+    print_static_node(user,9);
+    ex63(user,9,"Xa");
+}
+typedef struct ex64_double{
+    string data;
+    struct ex64_double *pred,*next;
+    int freq=0;
+}ex64_double,*ex64_point_double;
+bool ex64_double_insert(ex64_point_double& L,const string& value,int freq){
+    if (!L) return false;
+    auto p = L;
+    for(;p->next;p=p->next);
+    auto temp = new ex64_double {value,p, nullptr,freq};
+    p->next = temp;
+    return true;
+}
+void ex64_double_print(ex64_point_double& L){
+    if (!L) return;
+    auto p=L->next;
+    while (p){
+        cout<<"data: "<<p->data<<" freq:"<<p->freq;
+        p =p->next;
+        if (p) cout<<" -> ";
+    }
+    cout<<endl;
+}
+ex64_point_double ex64(ex64_point_double & L,const string& value){
+
+    // 查找 x，freq+1
+    auto p=L->next;
+    auto pre=L;
+    bool flag=false;
+    while (p){
+        if (p->data == value){
+            p->freq ++;
+            flag=true;
+            break;
+        }else{
+            pre=p;
+            p=p->next;
+        }
+    }
+
+    //对双向链表进行插入排序
+    p=L->next->next;
+    ex64_point_double q= nullptr,qpre= nullptr,r= nullptr;
+    L->next->next = nullptr;
+    while (p){
+        q=L->next;
+        r = p->next;
+        qpre = L;
+        while (q){
+            if (p->freq>q->freq){
+                p->next = q;
+                qpre->next = p;
+                p->pred = qpre;
+                q->pred = p;
+                break;
+            }else{
+                qpre=q;
+                q = q->next;
+            }
+        }
+        if (q== nullptr){
+            qpre->next = p;
+            p->next = nullptr;
+            p->pred = qpre;
+        }
+        p=r;
+    }
+
+    if (!flag){
+       pre->next = new ex64_double {value,pre, nullptr,1};
+       p = pre->next;
+    }
+    ex64_double_print(L);
+
+    return p;
+
+}
+void main2_64(){
+    auto head = new ex64_double{"", nullptr, nullptr,0};
+    ex64_double_insert(head,"a",2);
+    ex64_double_insert(head,"b",3);
+    ex64_double_insert(head,"c",1);
+    ex64_double_insert(head,"d",1);
+    ex64_double_print(head);
+    ex64(head,"c");
+    ex64(head,"c");
+}
 int main2(){
-    main2_59();
+    main2_64();
 //    test();
     return 0;
 }
