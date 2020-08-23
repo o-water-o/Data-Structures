@@ -2110,8 +2110,139 @@ void main2_64(){
     ex64(head,"c");
     ex64(head,"c");
 }
+void ex65(LinkList & L){
+    LinkList p=L->next->next,q= nullptr,qpre= nullptr,r= nullptr;
+    L->next->next = nullptr;
+    while (p){
+        r = p->next;
+        q=L->next;
+        qpre=L;
+        while (q){
+            if (p->data< q->data){
+                p->next = q;
+                qpre->next = p;
+                break;
+            }else{
+                qpre=q;
+                q = q->next;
+            }
+        }
+        if (q== nullptr){
+            qpre->next = p;
+            p->next = nullptr;
+        }
+        p=r;
+    }
+    //输出并删除
+    p = L->next;
+    auto pre=L;
+    while (p){
+        cout<<p->data<<"\t";
+        pre->next = p->next;
+        delete p;
+        p=pre->next;
+    }
+}
+void main2_65(){
+    int x[] = {3,2,5,4,89,10,1,24,16};
+    auto L = CreateSingleList(x,get_array_len(x));
+    ex65(L);
+}
+
+typedef struct ex66_double_list{
+    string data;
+    struct ex66_double_list *llink,*rlink;
+} ex66_double_list,*ex66_type;
+void ex66_print(ex66_type& L){
+    auto p=L->rlink;
+    while (p!=L){
+        cout<<p->data;
+        p=p->rlink;
+        if (p!=L) cout<<" -> ";
+    }
+    cout<<endl;
+}
+void ex66(){
+    auto head = new ex66_double_list {"",nullptr, nullptr};
+    //存放输入数据
+    string ch;
+    auto p=head;
+    cout<<"please enter :\n";
+    while (cin>>ch){
+        if (ch=="*")
+            break;
+        if (ch!="0"&&ch!="1"&&ch!="*") {
+            cout << "please enter 0 or 1\n";
+            continue;
+        }
+        auto temp = new ex66_double_list {ch,p, head};
+        p->rlink = temp;
+        head->llink = temp;
+        p = temp;
+    }
+    ex66_print(head);
+    //实现二进制的 +1 运算
+    auto tail=head->llink;
+    p=tail;
+    while (p->llink!=tail){
+        if (p->data == "1"){
+            p->data = "0";
+            p =p->llink;
+        }else if (p->data == "0"){
+            p->data="1";
+            break;
+        }
+    }
+    if (p->llink==tail){
+        auto temp = new ex66_double_list{"1",head,head->rlink};
+        head->rlink->llink = temp;
+        head->rlink = temp;
+    }
+    ex66_print(head);
+}
+void main2_66(){
+    int x[] = {1,0,1,0,1};
+    ex66();
+}
+void ex67(LinkList& L){
+    //无头节点单链表插入排序
+    LinkList p=L->next,q= nullptr,qpre= nullptr,r= nullptr;
+    L->next= nullptr;
+    while (p){
+        r = p->next;
+        if (p->data < L->data) {
+            p->next = L;
+            L = p;
+            p=r;
+            continue;
+        }
+        q = L->next;
+        qpre=L;
+        while (q) {
+            if (q->data> p->data){
+                p->next = q;
+                qpre ->next=p;
+                break;
+            }else{
+                qpre=q;
+                q=q->next;
+            }
+        }
+        if (q== nullptr){
+            qpre->next=p;
+            p->next= nullptr;
+        }
+        p=r;
+    }
+    print_singlelist(L,false);
+}
+void main2_67(){
+    int x[] = {2,4,6,5,3,1,12,10};
+    auto L = CreateSingleList(x,get_array_len(x), false);
+    ex67(L);
+}
 int main2(){
-    main2_64();
+    main2_67();
 //    test();
     return 0;
 }
