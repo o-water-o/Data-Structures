@@ -2241,8 +2241,41 @@ void main2_67(){
     auto L = CreateSingleList(x,get_array_len(x), false);
     ex67(L);
 }
+LinkList ex68(LinkList& head1,int len1,LinkList& head2,int len2){
+    LinkList longlist,shortlist;
+    int difference=0;
+    if (len1>len2){
+        longlist = head1;
+        shortlist = head2;
+    } else{
+        longlist = head2;
+        shortlist = head2;
+    }
+    difference = abs(len2 - len1);
+    for (int i=0;i<difference;i++){
+        longlist = longlist->next;
+    }
+    auto pl = longlist->next,ps = shortlist->next;
+    while (pl&&ps){
+        if (pl->data == ps->data){
+            break;
+        }else{
+            pl = pl->next;
+            ps = ps ->next;
+        }
+    }
+    cout<<pl->data;
+    return pl;
+}
+void main2_68(){
+    int x1[] = {1,-2,3,4,8,9,10};
+    int x2[] = {6,7,8,9,10};
+    auto L1 = CreateSingleList(x1,get_array_len(x1));
+    auto L2 = CreateSingleList(x2,get_array_len(x2));
+    ex68(L1,get_array_len(x1),L2,get_array_len(x2));
+}
 int main2(){
-    main2_67();
+    main2_68();
 //    test();
     return 0;
 }
