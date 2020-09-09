@@ -3,8 +3,9 @@
 //
 #include <iostream>
 #include "chapter2.h"
+#include "chapter3.h"
 using namespace std;
 int main(){
-    main2();
+    chapter3();
 return 0;
 }
